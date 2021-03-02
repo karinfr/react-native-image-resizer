@@ -12,7 +12,7 @@ declare function createResizedImage(
   uri: string,
   width: number,
   height: number,
-  format: 'PNG' | 'JPEG' | 'WEBP',
+  format: 'PNG' | 'JPEG' | 'WEBP' | 'HEIC',
   quality: number,
   rotation?: number,
   outputPath?: string,
