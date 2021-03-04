@@ -10,8 +10,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+#ifndef HEIC_DECODING
+#define HEIC_DECODING
+
 /// Returns and NSData HEIC representation of the image if possible, otherwise returns nil.
-NSData *_Nullable tj_UIImageHEICRepresentation(UIImage *const image, const CGFloat compressionQuality);
+NSData *_Nullable tj_UIImageHEICRepresentation_resizer(UIImage *const image, const CGFloat compressionQuality);
 
 @interface UIGraphicsImageRenderer (TJHEICAdditions)
 
@@ -33,9 +36,11 @@ NSData *_Nullable tj_UIImageHEICRepresentation(UIImage *const image, const CGFlo
 
 @end
 
-BOOL tj_CGImageSourceUTIIsHEIC(const CGImageSourceRef imageSource);
-BOOL tj_isImageAtPathHEIC(NSString *const path);
+BOOL tj_CGImageSourceUTIIsHEIC_resizer(const CGImageSourceRef imageSource);
+BOOL tj_isImageAtPathHEIC_resizer(NSString *const path);
 
-pthread_mutex_t *tj_HEICEncodingLock(void);
+pthread_mutex_t *tj_HEICEncodingLock_resizer(void);
+
+#endif
 
 NS_ASSUME_NONNULL_END

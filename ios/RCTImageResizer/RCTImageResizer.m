@@ -34,7 +34,7 @@ bool saveImage(NSString * fullPath, UIImage * image, NSString * format, float qu
         } else if ([format isEqualToString:@"PNG"]) {
             data = UIImagePNGRepresentation(image);
         } else if ([format isEqualToString:@"HEIC"]) {
-            data = tj_UIImageHEICRepresentation(image, 0.8);
+            data = tj_UIImageHEICRepresentation_resizer(image, 0.8);
         }
 
         if (data == nil) {
