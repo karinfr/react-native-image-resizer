@@ -12,7 +12,7 @@
 
 #define SIMULATE_HEIC_UNAVAILABLE 0
 
-NSData *_Nullable tj_UIImageHEICRepresentation(UIImage *const image, const CGFloat compressionQuality)
+NSData *_Nullable tj_UIImageHEICRepresentation_resizer(UIImage *const image, const CGFloat compressionQuality)
 {
     NSData *imageData = nil;
 #if !SIMULATE_HEIC_UNAVAILABLE
@@ -25,7 +25,7 @@ NSData *_Nullable tj_UIImageHEICRepresentation(UIImage *const image, const CGFlo
 
                 // iOS devices seem to corrupt image data when concurrently creating HEIC images.
                 // Locking to ensure HEIC creation doesn't occur concurrently.
-                pthread_mutex_t *lock = tj_HEICEncodingLock();
+                pthread_mutex_t *lock = tj_HEICEncodingLock_resizer();
                 pthread_mutex_lock(lock);
                 
                 CGImageDestinationAddImage(destination, image.CGImage, (__bridge CFDictionaryRef)options);
@@ -78,7 +78,7 @@ NSData *_Nullable tj_UIImageHEICRepresentation(UIImage *const image, const CGFlo
                                               fallback:(NSData *(^)(UIImage *))fallback
 {
     UIImage *const image = [self imageWithActions:actions];
-    NSData *data = tj_UIImageHEICRepresentation(image, compressionQuality);
+    NSData *data = tj_UIImageHEICRepresentation_resizer(image, compressionQuality);
     if (data.length == 0 && fallback) {
         data = fallback(image);
     }
@@ -110,7 +110,7 @@ NSData *_Nullable tj_UIImageHEICRepresentation(UIImage *const image, const CGFlo
 
 @end
 
-BOOL tj_CGImageSourceUTIIsHEIC(const CGImageSourceRef imageSource)
+BOOL tj_CGImageSourceUTIIsHEIC_resizer(const CGImageSourceRef imageSource)
 {
     BOOL isHEIC = NO;
     if (@available(iOS 11.0, *)) {
@@ -122,18 +122,18 @@ BOOL tj_CGImageSourceUTIIsHEIC(const CGImageSourceRef imageSource)
     return isHEIC;
 }
 
-BOOL tj_isImageAtPathHEIC(NSString *const path)
+BOOL tj_isImageAtPathHEIC_resizer(NSString *const path)
 {
     BOOL isHEIC = NO;
     const CGImageSourceRef imageSource = CGImageSourceCreateWithURL((__bridge CFURLRef)[NSURL fileURLWithPath:path isDirectory:NO], nil);
     if (imageSource) {
-        isHEIC = tj_CGImageSourceUTIIsHEIC(imageSource);
+        isHEIC = tj_CGImageSourceUTIIsHEIC_resizer(imageSource);
         CFRelease(imageSource);
     }
     return isHEIC;
 }
 
-pthread_mutex_t *tj_HEICEncodingLock(void)
+pthread_mutex_t *tj_HEICEncodingLock_resizer(void)
 {
     static pthread_mutex_t lock;
     static dispatch_once_t onceToken;
